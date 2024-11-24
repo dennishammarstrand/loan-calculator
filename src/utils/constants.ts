@@ -1,0 +1,1 @@
+export const YEARLY_INTEREST_RATE = 0.099
