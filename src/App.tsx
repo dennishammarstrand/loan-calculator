@@ -4,10 +4,6 @@ import Range from './Range'
 import { calculateMonthlyCost } from './utils/monthlyCostCalculator'
 
 function App() {
-  const [minLoan] = useState(20000)
-  const [maxLoan] = useState(200000)
-  const [minYears] = useState(2)
-  const [maxYears] = useState(10)
   const [loanAmount, setLoanAmount] = useState(20000)
   const [loanYears, setLoanYears] = useState(2)
 
@@ -34,8 +30,8 @@ function App() {
           <div className="range-container">
             <h2>Lånebelopp</h2>
             <Range
-              min={minLoan}
-              max={maxLoan}
+              min={20000}
+              max={200000}
               step={10000}
               value={loanAmount}
               setValue={setLoanAmount}
@@ -45,8 +41,8 @@ function App() {
           <div className="range-container">
             <h2>Lånetid</h2>
             <Range
-              min={minYears}
-              max={maxYears}
+              min={2}
+              max={10}
               step={1}
               value={loanYears}
               setValue={setLoanYears}

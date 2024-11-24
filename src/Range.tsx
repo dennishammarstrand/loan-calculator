@@ -11,44 +11,49 @@ type Props = {
 }
 
 const Range = ({ min, max, step, value, setValue, type }: Props) => {
-  const [minValueSpanPosition, setMinValueSpanPosition] = useState(8)
+  const [thumbPosition, setThumbPosition] = useState(0)
   const rangeRef = useRef<HTMLInputElement>(null)
   const minValueRef = useRef<HTMLSpanElement>(null)
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt((e.target as HTMLInputElement).value)
-    if (rangeRef && rangeRef.current) {
-      const PROGRESS_RATIO = 5
-      let ratio = ((newValue - min) / (max - min)) * 100
-      if (ratio < 15) {
-        ratio = ratio + PROGRESS_RATIO
-      }
-      if (ratio > 85) {
-        ratio = ratio - PROGRESS_RATIO
-      }
-
-      rangeRef.current.style.background = `linear-gradient(90deg, #582f87 ${ratio}%, transparent ${ratio}%)`
-    }
+    setRangeProgress(newValue)
+    updateThumbPosition(newValue)
     setValue(newValue)
-    updateminValueSpanPosition(newValue)
   }
 
-  const updateminValueSpanPosition = (value: number) => {
+  const setRangeProgress = (value: number) => {
+    if (rangeRef.current) {
+      const EXTRA_PROGRESS_RATIO = 5
+      let ratio = ((value - min) / (max - min)) * 100
+      if (ratio < 15) {
+        ratio = ratio + EXTRA_PROGRESS_RATIO
+      }
+      if (ratio > 85) {
+        ratio = ratio - EXTRA_PROGRESS_RATIO
+      }
+      rangeRef.current.style.background = `linear-gradient(90deg, #582f87 ${ratio}%, transparent ${ratio}%)`
+    }
+  }
+
+  const updateThumbPosition = (value: number) => {
     if (rangeRef.current) {
       const rangeWidth = rangeRef.current.clientWidth
       const thumbWidth = 60
       const ratio = (value - min) / (max - min)
       const newPosition = ratio * (rangeWidth - thumbWidth)
-      const leftPadding = 8
-      setMinValueSpanPosition(newPosition + leftPadding)
+      setThumbPosition(newPosition)
     }
   }
 
-  const thumbDistance = minValueRef.current
+  const minValueSpanWidth = minValueRef.current
     ? minValueRef.current.clientWidth
     : 0
-  const trailingMinValue =
-    thumbDistance !== 0 && minValueSpanPosition > thumbDistance
+  const showTrailingMinValue =
+    thumbPosition > 0 && thumbPosition > minValueSpanWidth
+  const EXTRA_PADDING_FROM_THUMB = 16
+  const minValueSpanPosition =
+    thumbPosition - minValueSpanWidth - EXTRA_PADDING_FROM_THUMB
 
   const formattedMaxValue =
     type === 'currency' ? formattedCurrency(max) : formattedYears(max)
@@ -72,10 +77,10 @@ const Range = ({ min, max, step, value, setValue, type }: Props) => {
         ref={minValueRef}
         className="min-value"
         style={{
-          left: trailingMinValue
-            ? `${minValueSpanPosition - thumbDistance - 16}px`
-            : `${minValueSpanPosition}px`,
-          fontSize: trailingMinValue ? '16px' : '10px',
+          left: showTrailingMinValue
+            ? `${minValueSpanPosition}px`
+            : `${thumbPosition || 8}px`,
+          fontSize: showTrailingMinValue ? '16px' : '10px',
         }}
       >
         {formattedMinValue}
