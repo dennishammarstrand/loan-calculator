@@ -46,12 +46,13 @@ const Range = ({ min, max, step, value, setValue, type }: Props) => {
     }
   }
 
+  const EXTRA_PADDING_FROM_THUMB = 16
   const minValueSpanWidth = minValueRef.current
     ? minValueRef.current.clientWidth
     : 0
   const showTrailingMinValue =
-    thumbPosition > 0 && thumbPosition > minValueSpanWidth
-  const EXTRA_PADDING_FROM_THUMB = 16
+    thumbPosition > 0 &&
+    thumbPosition > minValueSpanWidth + EXTRA_PADDING_FROM_THUMB
   const minValueSpanPosition =
     thumbPosition - minValueSpanWidth - EXTRA_PADDING_FROM_THUMB
 
