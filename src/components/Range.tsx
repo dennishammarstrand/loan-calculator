@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
-import { formattedCurrency, formattedYears } from './utils/numberFormatters'
+import { formattedCurrency, formattedYears } from '../utils/numberFormatters'
+import MinValueIndicator from './MinValueIndicator'
 
 type Props = {
   min: number
@@ -13,12 +14,12 @@ type Props = {
 const Range = ({ min, max, step, value, setValue, type }: Props) => {
   const [thumbPosition, setThumbPosition] = useState(0)
   const rangeRef = useRef<HTMLInputElement>(null)
-  const minValueRef = useRef<HTMLSpanElement>(null)
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt((e.target as HTMLInputElement).value)
     setRangeProgress(newValue)
     updateThumbPosition(newValue)
+
     setValue(newValue)
   }
 
@@ -46,20 +47,8 @@ const Range = ({ min, max, step, value, setValue, type }: Props) => {
     }
   }
 
-  const EXTRA_PADDING_FROM_THUMB = 16
-  const minValueSpanWidth = minValueRef.current
-    ? minValueRef.current.clientWidth
-    : 0
-  const showTrailingMinValue =
-    thumbPosition > 0 &&
-    thumbPosition > minValueSpanWidth + EXTRA_PADDING_FROM_THUMB
-  const minValueSpanPosition =
-    thumbPosition - minValueSpanWidth - EXTRA_PADDING_FROM_THUMB
-
   const formattedMaxValue =
     type === 'currency' ? formattedCurrency(max) : formattedYears(max)
-  const formattedMinValue =
-    type === 'currency' ? formattedCurrency(value) : formattedYears(value)
 
   return (
     <div className="input-container">
@@ -74,18 +63,11 @@ const Range = ({ min, max, step, value, setValue, type }: Props) => {
         onInput={handleInput}
       />
       <span className="max-value">{formattedMaxValue}</span>
-      <span
-        ref={minValueRef}
-        className="min-value"
-        style={{
-          left: showTrailingMinValue
-            ? `${minValueSpanPosition}px`
-            : `${thumbPosition || 8}px`,
-          fontSize: showTrailingMinValue ? '16px' : '10px',
-        }}
-      >
-        {formattedMinValue}
-      </span>
+      <MinValueIndicator
+        value={value}
+        type={type}
+        thumbPosition={thumbPosition}
+      />
     </div>
   )
 }

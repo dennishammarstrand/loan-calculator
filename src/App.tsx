@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import Range from './Range'
+import Range from './components/Range'
 import { calculateMonthlyCost } from './utils/monthlyCostCalculator'
 
 function App() {
