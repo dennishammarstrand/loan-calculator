@@ -19,7 +19,6 @@ const Range = ({ min, max, step, value, setValue, type }: Props) => {
     const newValue = parseInt((e.target as HTMLInputElement).value)
     setRangeProgress(newValue)
     updateThumbPosition(newValue)
-
     setValue(newValue)
   }
 
